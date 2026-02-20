@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💌 वर्षा के नाम — एक प्रेम पत्र</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi:ital@0;1&family=Noto+Sans+Devanagari:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   ROOT & RESET
+═══════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --void: #04020a;
+  --deep: #0c0518;
+  --rose: #c9304f;
+  --rose-pale: #e8768a;
+  --rose-glow: rgba(201,48,79,0.35);
+  --gold: #c9a84c;
+  --gold-pale: #e8cc86;
+  --gold-glow: rgba(201,168,76,0.3);
+  --cream: #f9f2e8;
+  --parchment: #f0e2c8;
+  --ink: #1e0f08;
+  --ink-mid: #4a2c1a;
+  --text-soft: rgba(249,242,232,0.7);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--void);
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ═══════════════════════════════════════
+   CUSTOM CURSOR
+═══════════════════════════════════════ */
+#cursor {
+  position: fixed;
+  width: 20px; height: 20px;
+  border: 1.5px solid var(--rose-pale);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  transition: transform 0.15s ease, opacity 0.3s;
+  transform: translate(-50%, -50%);
+}
+#cursor-dot {
+  position: fixed;
+  width: 4px; height: 4px;
+  background: var(--rose);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+}
+body:hover #cursor { opacity: 1; }
+
+/* ═══════════════════════════════════════
+   CANVAS BACKGROUND
+═══════════════════════════════════════ */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 2s ease;
+}
+#bg-canvas.active { opacity: 1; }
+
+/* ═══════════════════════════════════════
+   PRELOADER — CINEMATIC
+═══════════════════════════════════════ */
+#preloader {
+  position: fixed; inset: 0;
+  z-index: 9999;
+  background: var(--void);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  transition: opacity 1.5s ease, visibility 1.5s ease;
+}
+#preloader.out { opacity: 0; visibility: hidden; }
+.pre-envelope {
+  position: relative;
+  width: 110px; height: 80px;
+  margin-bottom: 32px;
+}
+.pre-env-body {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(170deg, #c9a84c 0%, #8b6914 100%);
+  border-radius: 2px;
+  box-shadow: 0 8px 40px rgba(201,168,76,0.25), 0 0 0 1px rgba(201,168,76,0.2);
+  animation: envPulse 2s ease-in-out infinite;
+}
+.pre-env-flap {
+  position: absolute;
+  top: 0; left: 0;
+  width: 110px; height: 0;
+  border-left: 55px solid transparent;
+  border-right: 55px solid transparent;
+  border-top: 46px solid #a8841a;
+  transform-origin: top center;
+  animation: flapOpen 2s ease-in-out 1s forwards;
+}
+.pre-env-seal {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 26px;
+  animation: sealBeat 1.5s ease-in-out infinite;
+}
+@keyframes envPulse {
+  0%,100%{transform:scale(1) rotate(-1deg);}
+  50%{transform:scale(1.04) rotate(1deg);}
+}
+@keyframes flapOpen {
+  0%{transform:rotateX(0);}
+  100%{transform:rotateX(-180deg);}
+}
+@keyframes sealBeat {
+  0%,100%{transform:translate(-50%,-50%) scale(1);}
+  50%{transform:translate(-50%,-50%) scale(1.25);}
+}
+.pre-text {
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  font-weight: 300;
+  font-size: 1.1rem;
+  color: var(--gold-pale);
+  letter-spacing: 0;
+  opacity: 0;
+  animation: fadeIn 1s ease 0.5s forwards;
+}
+.pre-line {
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin-top: 16px;
+  animation: lineExpand 1.5s ease 1s forwards;
+}
+@keyframes lineExpand { to { width: 200px; } }
+@keyframes fadeIn { to { opacity: 1; } }
+
+/* ═══════════════════════════════════════
+   HERO — OPENING CHAPTER
+═══════════════════════════════════════ */
+#hero {
+  position: relative; z-index: 2;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 20px;
+  overflow: hidden;
+}
+.hero-chapter {
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  font-weight: 300;
+  font-size: 0.85rem;
+  letter-spacing: 0;
+  color: var(--gold);
+  opacity: 0;
+  animation: fadeIn 1s ease 3s forwards;
+  margin-bottom: 24px;
+}
+.hero-main-title {
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  font-weight: 400;
+  font-size: clamp(3rem, 10vw, 7.5rem);
+  color: #e8cc86;
+  text-shadow: 0 0 60px rgba(201,168,76,0.5), 0 0 120px rgba(201,168,76,0.2);
+  line-height: 1.3;
+  opacity: 0;
+  animation: titleReveal 1.5s cubic-bezier(0.16,1,0.3,1) 3.3s forwards;
+}
+@keyframes titleReveal {
+  from { opacity:0; transform:translateY(20px) scale(0.97); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+.hero-tagline {
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  font-weight: 300;
+  font-size: clamp(1rem, 3vw, 1.3rem);
+  color: var(--rose-pale);
+  letter-spacing: 0;
+  margin-top: 16px;
+  opacity: 0;
+  animation: fadeIn 1s ease 4.2s forwards;
+}
+.hero-divider {
+  display: flex; align-items: center; gap: 16px;
+  margin: 32px auto;
+  opacity: 0;
+  animation: fadeIn 1s ease 4.6s forwards;
+}
+.hero-divider-line {
+  width: 80px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-pale));
+}
+.hero-divider-line.r {
+  background: linear-gradient(90deg, var(--gold-pale), transparent);
+}
+.hero-divider-gem { color: var(--rose); font-size: 1rem; }
+
+.open-btn {
+  position: relative;
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  letter-spacing: 0;
+  color: var(--void);
+  background: linear-gradient(135deg, #e8cc86, #c9a84c, #8b6914);
+  border: none;
+  padding: 18px 56px;
+  cursor: none;
+  border-radius: 1px;
+  overflow: hidden;
+  opacity: 0;
+  animation: fadeIn 1s ease 5s forwards;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 0 1px rgba(201,168,76,0.4), 0 8px 40px rgba(201,168,76,0.2);
+}
+.open-btn::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.35) 50%, transparent 60%);
+  transform: translateX(-100%);
+  animation: btnShimmer 4s ease 5.5s infinite;
+}
+@keyframes btnShimmer { 0%,100%{transform:translateX(-100%);}50%{transform:translateX(100%);} }
+.open-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 0 1px rgba(201,168,76,0.6), 0 20px 60px rgba(201,168,76,0.35);
+}
+.open-btn:active { transform: translateY(-1px); }
+
+/* ═══════════════════════════════════════
+   SCROLL PROGRESS BAR
+═══════════════════════════════════════ */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--rose), var(--gold));
+  z-index: 1000;
+  width: 0%;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 8px var(--rose-glow);
+}
+
+/* ═══════════════════════════════════════
+   LETTER SCENE
+═══════════════════════════════════════ */
+#letter-scene {
+  display: none;
+  position: relative; z-index: 2;
+  padding: 60px 20px 120px;
+  min-height: 100vh;
+}
+#letter-scene.active { display: block; }
+
+/* Chapter indicators */
+.chapter-marker {
+  text-align: center;
+  margin: 80px auto 32px;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.chapter-marker.vis { opacity: 1; }
+.chapter-marker span {
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  
+  font-size: 0.7rem;
+  letter-spacing: 0;
+  
+  color: var(--gold);
+  background: rgba(201,168,76,0.08);
+  padding: 6px 20px;
+  border: 1px solid rgba(201,168,76,0.2);
+}
+
+/* Main letter paper */
+.letter-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.letter-paper {
+  position: relative;
+  background: linear-gradient(175deg, #f9f4ec 0%, #f2e8d4 35%, #ede0c5 60%, #f5ead6 100%);
+  border-radius: 1px;
+  box-shadow:
+    0 0 0 1px rgba(201,168,76,0.2),
+    0 4px 0 rgba(201,168,76,0.1),
+    0 40px 80px rgba(0,0,0,0.7),
+    0 80px 160px rgba(0,0,0,0.4),
+    inset 0 0 120px rgba(201,168,76,0.06);
+  overflow: hidden;
+  opacity: 0;
+  transform: perspective(1200px) rotateX(8deg) translateY(40px);
+  transition: opacity 1.2s ease, transform 1.2s cubic-bezier(0.16,1,0.3,1);
+}
+.letter-paper.landed {
+  opacity: 1;
+  transform: perspective(1200px) rotateX(0deg) translateY(0);
+}
+
+/* Paper texture via CSS */
+.letter-paper::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(transparent, transparent 35px, rgba(139,90,43,0.07) 36px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0;
+}
+
+/* Top accent bar */
+.letter-paper::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #c9304f, #e8768a, #c9a84c, #e8768a, #c9304f);
+  background-size: 200% 100%;
+  animation: barShift 8s linear infinite;
+}
+@keyframes barShift { 0%{background-position:0%;}100%{background-position:200%;} }
+
+.letter-inner {
+  position: relative; z-index: 1;
+  padding: clamp(32px, 7vw, 72px);
+}
+
+/* Date & header */
+.letter-date {
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  
+  font-size: 0.85rem;
+  color: #8b6632;
+  letter-spacing: 0;
+  margin-bottom: 40px;
+  text-align: right;
+  opacity: 0;
+  transition: opacity 0.8s ease 0.2s;
+}
+.letter-date.vis { opacity: 1; }
+
+/* Wax seal */
+.wax-seal {
+  position: absolute;
+  top: -28px; left: 50%;
+  transform: translateX(-50%);
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #e8486b, #9a1a35 60%, #6b0f24);
+  box-shadow:
+    0 0 0 4px rgba(201,48,79,0.2),
+    0 8px 24px rgba(0,0,0,0.5),
+    inset 0 -4px 8px rgba(0,0,0,0.3),
+    inset 0 2px 4px rgba(255,150,170,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  animation: sealFloat 4s ease-in-out infinite;
+}
+@keyframes sealFloat {
+  0%,100%{transform:translateX(-50%) translateY(0);}
+  50%{transform:translateX(-50%) translateY(-5px);}
+}
+
+/* Corner ornaments */
+.corner-ornament {
+  position: absolute;
+  width: 50px; height: 50px;
+  opacity: 0.4;
+}
+.co-tl { top:16px; left:16px; border-top:1.5px solid var(--gold); border-left:1.5px solid var(--gold); }
+.co-tr { top:16px; right:16px; border-top:1.5px solid var(--gold); border-right:1.5px solid var(--gold); }
+.co-bl { bottom:16px; left:16px; border-bottom:1.5px solid var(--gold); border-left:1.5px solid var(--gold); }
+.co-br { bottom:16px; right:16px; border-bottom:1.5px solid var(--gold); border-right:1.5px solid var(--gold); }
+
+/* Greeting */
+.letter-greeting {
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  font-weight: 300;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  color: var(--rose);
+  text-align: center;
+  margin-bottom: 36px;
+  line-height: 1.4;
+  text-shadow: 0 2px 20px rgba(201,48,79,0.2);
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.letter-greeting.vis { opacity: 1; transform: translateY(0); }
+
+/* Ornate divider */
+.orn-div {
+  text-align: center;
+  color: var(--gold);
+  font-size: 1rem;
+  
+  margin: 28px 0;
+  opacity: 0.5;
+}
+
+/* Body paragraphs */
+.para {
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  font-weight: 400;
+  font-size: clamp(1rem, 2.4vw, 1.1rem);
+  line-height: 2.1;
+  color: var(--ink-mid);
+  margin-bottom: 24px;
+  text-align: justify;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.16,1,0.3,1);
+}
+.para.vis {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Dropcap disabled for Devanagari - first-letter pseudo-element doesn't work well */
+.para.dropcap::first-letter {
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  font-size: 3.2em;
+  font-weight: 300;
+  float: left;
+  line-height: 0.8;
+  margin: 0.08em 0.1em 0 0;
+  color: var(--rose);
+  filter: drop-shadow(0 2px 8px rgba(201,48,79,0.3));
+}
+
+/* Inline highlights */
+.hl {
+  background: linear-gradient(120deg, rgba(201,48,79,0.12), rgba(201,48,79,0.2));
+  color: #8b1a30;
+  padding: 1px 5px;
+  border-radius: 2px;
+  font-weight: 500;
+}
+.gl {
+  color: #7a5210;
+  
+}
+
+/* Laugh line */
+.laugh-line {
+  text-align: center;
+  
+  color: #9b6e3a;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.8s, transform 0.8s;
+}
+.laugh-line.vis { opacity: 1; transform: scale(1); }
+
+/* ═══════════════════════════════════════
+   THE QUESTION — CENTREPIECE
+═══════════════════════════════════════ */
+.question-block {
+  margin: 60px 0 48px;
+  text-align: center;
+  position: relative;
+  opacity: 0;
+  transform: translateY(30px) scale(0.98);
+  transition: opacity 1.2s ease, transform 1.2s cubic-bezier(0.16,1,0.3,1);
+}
+.question-block.vis { opacity: 1; transform: translateY(0) scale(1); }
+.q-glow-ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 260px; height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,48,79,0.12) 0%, transparent 70%);
+  animation: ringPulse 3s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes ringPulse {
+  0%,100%{transform:translate(-50%,-50%) scale(1); opacity:0.6;}
+  50%{transform:translate(-50%,-50%) scale(1.15); opacity:1;}
+}
+.q-prelude {
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+.q-main {
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  font-weight: 300;
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  color: var(--rose);
+  line-height: 1.5;
+  text-shadow: 0 0 40px rgba(201,48,79,0.25);
+}
+
+/* Signature */
+.sig-block {
+  text-align: right;
+  margin-top: 52px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(201,168,76,0.25);
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.sig-block.vis { opacity: 1; }
+.sig-name {
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  font-weight: 300;
+  font-size: 2rem;
+  color: var(--rose);
+  display: block;
+}
+.sig-sub {
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  font-weight: 300;
+  font-size: 0.85rem;
+  color: #9b7840;
+  letter-spacing: 0;
+  margin-top: 6px;
+}
+
+/* ═══════════════════════════════════════
+   RESPONSE SECTION
+═══════════════════════════════════════ */
+#response-zone {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 80px 20px 40px;
+  text-align: center;
+  display: none;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+#response-zone.active { display: block; }
+#response-zone.vis { opacity: 1; }
+
+.resp-title {
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  font-weight: 300;
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  color: var(--text-soft);
+  letter-spacing: 0;
+  margin-bottom: 48px;
+}
+
+.btn-ring {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.btn-yes {
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  font-weight: 500;
+  font-size: 1.05rem;
+  letter-spacing: 0;
+  color: white;
+  background: linear-gradient(135deg, #c9304f 0%, #8b1a2f 60%, #c9304f 100%);
+  background-size: 200% 200%;
+  border: none;
+  padding: 20px 64px;
+  cursor: none;
+  position: relative;
+  overflow: hidden;
+  border-radius: 1px;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  box-shadow: 0 0 0 1px rgba(201,48,79,0.4), 0 8px 40px rgba(201,48,79,0.3);
+  animation: btnGradShift 4s ease infinite;
+}
+@keyframes btnGradShift { 0%,100%{background-position:0%;}50%{background-position:100%;} }
+.btn-yes::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.25) 50%, transparent 60%);
+  transform: translateX(-100%);
+  animation: btnShimmer 3s ease-in-out infinite;
+}
+.btn-yes:hover {
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: 0 0 0 1px rgba(201,48,79,0.6), 0 16px 60px rgba(201,48,79,0.5);
+}
+.btn-yes:active { transform: translateY(-1px) scale(1.01); }
+
+.btn-no {
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  font-weight: 300;
+  font-size: 1rem;
+  letter-spacing: 0;
+  color: rgba(255,255,255,0.3);
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 20px 44px;
+  cursor: none;
+  border-radius: 1px;
+  transition: all 0.25s ease;
+  position: relative;
+}
+.btn-no:hover {
+  color: rgba(255,255,255,0.5);
+  border-color: rgba(255,255,255,0.2);
+}
+
+/* ═══════════════════════════════════════
+   CELEBRATION SCENE
+═══════════════════════════════════════ */
+#celebration {
+  display: none;
+  position: fixed; inset: 0;
+  z-index: 9998;
+  background: radial-gradient(ellipse at 40% 40%, #1a0a1a, #080410 60%, #020108);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
+}
+#celebration.show { display: flex; }
+
+.cel-rings {
+  position: absolute;
+  width: 500px; height: 500px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.cel-ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid var(--rose);
+  animation: ringExpand 3s ease-out infinite;
+}
+.cel-ring:nth-child(1) { width: 100px; height: 100px; animation-delay: 0s; }
+.cel-ring:nth-child(2) { width: 200px; height: 200px; animation-delay: 0.6s; }
+.cel-ring:nth-child(3) { width: 350px; height: 350px; animation-delay: 1.2s; }
+@keyframes ringExpand {
+  0%{transform:translate(-50%,-50%) scale(0.5);opacity:0.8;}
+  100%{transform:translate(-50%,-50%) scale(1.5);opacity:0;}
+}
+
+#cel-canvas { position: absolute; inset: 0; pointer-events: none; }
+
+.cel-content { position: relative; z-index: 2; }
+.cel-heart { font-size: 72px; display: block; margin-bottom: 24px; animation: bigBeat 1.2s ease-in-out infinite; }
+@keyframes bigBeat {
+  0%,100%{transform:scale(1);}
+  15%{transform:scale(1.18);}
+  30%{transform:scale(1);}
+  45%{transform:scale(1.1);}
+}
+.cel-title {
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  font-weight: 400;
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  color: #e8cc86;
+  text-shadow: 0 0 30px rgba(201,48,79,0.4), 0 0 60px rgba(201,168,76,0.3);
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+@keyframes gradShift { 0%,100%{background-position:0%;}50%{background-position:100%;} }
+.cel-sub {
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  font-weight: 300;
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  color: rgba(232,204,134,0.85);
+  max-width: 520px;
+  line-height: 1.9;
+  margin: 0 auto;
+}
+.cel-gems { font-size: 2.5rem; letter-spacing: 8px; margin-top: 28px; }
+
+/* Gentle decline response */
+#decline-msg {
+  display: none;
+  max-width: 600px;
+  margin: 40px auto;
+  text-align: center;
+  padding: 40px;
+  border: 1px solid rgba(201,168,76,0.15);
+  background: rgba(201,168,76,0.04);
+}
+#decline-msg.show { display: block; }
+#decline-msg p {
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  font-weight: 300;
+  font-size: 1.1rem;
+  color: rgba(249,242,232,0.6);
+  line-height: 2;
+}
+
+/* ═══════════════════════════════════════
+   AMBIENT PARTICLES / PETALS
+═══════════════════════════════════════ */
+#particle-layer {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 1;
+  overflow: hidden;
+}
+.ambient-petal {
+  position: absolute;
+  top: -20px;
+  border-radius: 50% 0 50% 50%;
+  opacity: 0;
+  animation: petalDrift linear forwards;
+}
+@keyframes petalDrift {
+  0%  { opacity:0; transform:rotate(0deg) translateX(0); }
+  8%  { opacity:0.6; }
+  92% { opacity:0.2; }
+  100%{ opacity:0; transform:rotate(400deg) translateX(80px) translateY(110vh); }
+}
+
+/* ═══════════════════════════════════════
+   SCROLL HINT
+═══════════════════════════════════════ */
+.scroll-hint {
+  position: fixed;
+  bottom: 28px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  font-family: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', sans-serif;
+  
+  font-size: 0.8rem;
+  letter-spacing: 0;
+  
+  color: rgba(201,168,76,0.5);
+  display: none;
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+.scroll-hint.show { display: block; }
+@keyframes scrollBounce {
+  0%,100%{transform:translateX(-50%) translateY(0);}
+  50%{transform:translateX(-50%) translateY(-8px);}
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media (max-width:520px) {
+  .letter-inner { padding: 28px 20px 36px; }
+  .btn-ring { flex-direction: column; align-items: center; }
+  .btn-yes, .btn-no { width: 100%; max-width: 260px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div id="cursor"></div>
+<div id="cursor-dot"></div>
+
+<!-- Progress bar -->
+<div id="progress-bar"></div>
+
+<!-- Canvas background -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- Particle layer -->
+<div id="particle-layer"></div>
+
+<!-- ══════════════════════════════════════
+     PRELOADER
+══════════════════════════════════════ -->
+<div id="preloader">
+  <div class="pre-envelope">
+    <div class="pre-env-body"></div>
+    <div class="pre-env-flap"></div>
+    <div class="pre-env-seal">💌</div>
+  </div>
+  <p class="pre-text">एक ख़त तुम्हारे नाम</p>
+  <div class="pre-line"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
+<section id="hero">
+  <p class="hero-chapter">— एक प्रेम पत्र —</p>
+  <h1 class="hero-main-title">प्रिय वर्षा</h1>
+  <div class="hero-divider">
+    <div class="hero-divider-line"></div>
+    <span class="hero-divider-gem">✦</span>
+    <div class="hero-divider-line r"></div>
+  </div>
+  <button class="open-btn" onclick="openLetter()">
+    💌 &nbsp; पत्र खोलो &nbsp; 💌
+  </button>
+</section>
+
+<!-- ══════════════════════════════════════
+     LETTER SCENE
+══════════════════════════════════════ -->
+<section id="letter-scene">
+  <div class="letter-wrap">
+    <div class="letter-paper" id="letterPaper">
+      <div class="wax-seal">💌</div>
+      <div class="corner-ornament co-tl"></div>
+      <div class="corner-ornament co-tr"></div>
+      <div class="corner-ornament co-bl"></div>
+      <div class="corner-ornament co-br"></div>
+
+      <div class="letter-inner">
+        <div class="letter-date" id="ldate"></div>
+
+        <div class="letter-greeting" id="lgreet">
+          🌹 &nbsp; प्रिय वर्षा &nbsp; 🌹
+        </div>
+
+        <div class="orn-div">✦ ✦ ✦</div>
+
+        <!-- Paragraphs -->
+        <p class="para dropcap" data-delay="0">
+          मैंने यह निर्णय हर तरह से सोचने और समझने के बाद लिया है, और मैं यह पत्र <span class="hl">अपनी दोस्ती दाँव पर लगाकर</span> लिख रहा हूँ — ताकि अगर तुम न भी मिलो, तो मुझे यह पछतावा न हो कि मैंने अपने मन की बात तुम्हें नहीं बता पाया। और मैं तुम्हें <span class="gl">किसी बंधन में नहीं बाँधना चाहता।</span>
+        </p>
+
+        <p class="para" data-delay="100">
+          अगर तुम्हें लगता है कि मैं तुम्हारे लिए सही इंसान हूँ जो <span class="hl">जीवन भर साथ चल सके</span>, तो ही तुम अपना निर्णय लेना। मैं वादा करता हूँ — तुम्हारा निर्णय जो भी होगा, मैं उसे स्वीकार करूँगा। 
+        </p>
+
+        <p class="para" data-delay="150">
+          मैंने जो भी अपने विचार तुम्हें बताए हैं अब तक, उनमें <span class="hl">एक प्रतिशत की भी मिलावट नहीं है।</span> मैं अपने विचारों को धर्म, जाति जैसे बंधनों में नहीं रखता — क्योंकि मेरा मानना है कि विचार स्वतंत्र तभी हो सकते हैं जब आप किसी विचारधारा के तले न जी रहे हों।
+        </p>
+
+        <p class="para" data-delay="200">
+          मैंने अपने बारे में सारी बातें बता दी हैं, लेकिन मेरा मानना है कि तुम्हारी कुछ अपेक्षाएँ होंगी जीवन में — और यह संभव है कि मैं तुम्हारी अपेक्षाओं पर सही नहीं उतरता होऊ । इसीलिए <span class="hl">अपना निर्णय बिना हिचकिचाए लेना, एकदम बहादुर लड़की की तरह।</span> यह मत सोचना कि मुझे बुरा लगेगा — मैं यह लिखने से पहले खुद को पूरी तरह मना चुका था कि तुम जैसा भी निर्णय लोगी, मैं उसे <span class="gl">हँसी-खुशी मान लूँगा।</span>
+        </p>
+
+        <p class="para" data-delay="250">
+          और चिंता मत करो — मैं इस बारे में किसी को नहीं बताऊँगा, और <span class="hl">तुम्हारे ऊपर किसी तरह की तकलीफ़ नहीं आने दूँगा।</span>
+        </p>
+
+        <div class="orn-div">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+        <p class="para" data-delay="300">
+          और मैं यह लिखने से पहले सारी चीज़ें जान चुका था — कि अगर हम साथ आते हैं तो मुझे बहुत-सी चीज़ों के खिलाफ जाना पड़ेगा, हो सकता है परिवार के खिलाफ भी। क्योंकि यह जातिवादी समाज को हमारा साथ कभी नहीं भाएगा। <span class="hl">लेकिन मैं इस समाज से लड़ने के लिए भी तैयार हूँ।</span> मुझे फ़र्क नहीं पड़ता यह समाज क्या सोचता है — <span class="gl">मुझे फ़र्क सिर्फ़ तुम्हारे निर्णय से पड़ता है।</span>
+        </p>
+
+        <p class="para" data-delay="350">
+          मेरी और तुम्हारी दुनिया भी अलग रही है। मैंने अपनी ज़िंदगी सबके रहते हुए भी <span class="gl">एकांतवास में बीताया</span> — माँ-बाप रहते हुए भी लगभाग 13 साल यह नहीं जाना कि असली माँ-बाप का प्यार क्या होता है। लेकिन मुझे किसी तरह की तकलीफ़ें नहीं थीं।
+        </p>
+
+        <p class="para" data-delay="400">
+          वहीं दूसरी तरफ, <span class="hl">तुम्हारी दुनिया दुख और दर्द से भरी पड़ी थी</span> — उसके बाद भी तुमने खुद को और अपने बहनों को सँभाला। यह अपने आप में दिखाता है कि तुम <span class="hl">मानसिक रूप से बहुत मज़बूत हो।</span> शायद तुम्हारी मुश्किलों से भरी ज़िंदगी ने तुम्हें <span class="gl">कथोर</span> बना दिया — यही कारण है कि तुम अपनी भावनाएँ कभी ज़ाहिर नहीं करतीं हो, तुम्हें अपनी भावनाओं पर नियंत्रण है। <span class="hl">तुम अपनी भावनाएं अच्छे से छुपा लेती हो लेकिन आज मत छुपाना जो दिल में हो बोल दो।</span>
+        </p>
+        <div class="orn-div">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+        <p class="para" data-delay="500">
+            अपना निर्णय बताने से पहले हर पहलू पर गंभीरता से विचार कर लेना। मेरे परिवार और परिस्थितियों के बारे में तुम पहले से जानती हो — हमारे रिश्ते की सच्चाई जानने के बाद <span class="hl">मेरे घरवाले शायद सहमत न हों</span>, लेकिन उस स्थिति का सामना करने के लिए मैं पूरी तरह तैयार हूँ। अब केवल <span class="gl">तुम्हारे निर्णय का इंतज़ार है।</span> क्योंकि मैंने अपने जीवन का सबसे महत्वपूर्ण फैसला पहले ही कर लिया है। अब तुम्हारे फैसले का इंतजार है।
+        </p>
+        
+        <p class="para" data-delay="550">
+        पहले मुझे लगता था कि <span class="gl">प्यार जैसी बातें शायद समय की बर्बादी होती हैं</span> — लेकिन अब समझ आया है कि प्यार सिर्फ भावना नहीं, एक ऊर्जा है। ऐसी ऊर्जा, जो इंसान को बदल देती है। पहले मैं केवल अपनी ज़िंदगी बेहतर बनाने के लिए मेहनत करता था, लेकिन अब <span class="hl">अपने भविष्य की कल्पना में तुम्हें भी देखता हूँ।</span>
+        </p>
+        <p class="para laugh-line" data-delay="600" data-laugh="true">
+          और अब मैं अपने शब्दों पर विराम देकर सिर्फ एक सवाल पूछना चाहता हूं
+        </p>
+
+        <!-- THE QUESTION -->
+        <div class="question-block" id="q-block">
+          <div class="q-glow-ring"></div>
+          <!-- <p class="q-prelude">— सबसे बड़ा सवाल —</p> -->
+          <p class="q-main">
+            क्या तुम जीवन भर<br>मेरे साथ चलना चाहोगी? 🌹
+          </p>
+        </div>
+
+        <!-- Signature -->
+        <div class="sig-block" id="sig">
+          <span class="sig-name">तुम्हारा सतानंद ,</span>
+        </div>
+
+      </div><!-- /letter-inner -->
+    </div><!-- /letter-paper -->
+  </div><!-- /letter-wrap -->
+
+  <!-- Response zone -->
+  <div id="response-zone">
+    <p class="resp-title">✦ &nbsp; तुम्हारा जवाब? &nbsp; ✦</p>
+    <div class="btn-ring">
+      <button class="btn-yes" onclick="celebrate()">💕 &nbsp; हाँ, मैं चाहूँगी!</button>
+      <button class="btn-no" id="noBtn" onmouseover="dodgeNo(this)" onclick="dodgeNo(this)">नहीं...</button>
+    </div>
+    <!-- <div id="decline-msg">
+      <p>
+        कोई बात नहीं, वर्षा। 🙏<br><br>
+        तुम्हारा निर्णय मैं दिल से स्वीकार करता हूँ।<br>
+        <span style="color:rgba(201,168,76,0.7);">दोस्ती हमारी जैसी है, वैसी ही रहे — यही मेरी ख्वाहिश है।</span>
+      </p>
+    </div> -->
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     CELEBRATION
+══════════════════════════════════════ -->
+<div id="celebration">
+  <canvas id="cel-canvas"></canvas>
+  <div class="cel-rings">
+    <div class="cel-ring"></div>
+    <div class="cel-ring"></div>
+    <div class="cel-ring"></div>
+  </div>
+  <div class="cel-content">
+    <span class="cel-heart">💕</span>
+    <p class="cel-title">शुक्रिया, वर्षा!</p>
+    <p class="cel-sub">
+      मुझे अपने काबिल समझने के लिए <br>
+      मैं भी पूरी कोशिश करूंगा तुम्हारे लिए बेहतर बनने के लिए<br>
+      यह सिर्फ एक शुरुआत है... हमारे साथ की। 🌹
+    </p>
+    <a href="https://www.instagram.com/direct/t/17847754149269505/">Click Here</a>
+    <div class="cel-gems">🎉 &nbsp; 💍&nbsp; ✨</div>
+  </div>
+</div>
+
+<div class="scroll-hint" id="scrollHint">↓ &nbsp; नीचे स्क्रॉल करो &nbsp; ↓</div>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+<script>
+/* ── CURSOR ── */
+const cursor = document.getElementById('cursor');
+const cursorDot = document.getElementById('cursor-dot');
+let mx = 0, my = 0, cx = 0, cy = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursorDot.style.left = mx+'px'; cursorDot.style.top = my+'px'; });
+(function animCursor() {
+  cx += (mx - cx) * 0.14;
+  cy += (my - cy) * 0.14;
+  cursor.style.left = cx + 'px';
+  cursor.style.top  = cy + 'px';
+  requestAnimationFrame(animCursor);
+})();
+document.querySelectorAll('button, .open-btn').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.style.transform = 'translate(-50%,-50%) scale(2)');
+  el.addEventListener('mouseleave', () => cursor.style.transform = 'translate(-50%,-50%) scale(1)');
+});
+
+/* ── CANVAS BACKGROUND ── */
+const bgCanvas = document.getElementById('bg-canvas');
+const bgCtx = bgCanvas.getContext('2d');
+let stars = [];
+function initBgCanvas() {
+  bgCanvas.width = window.innerWidth;
+  bgCanvas.height = window.innerHeight;
+  stars = Array.from({length: 220}, () => ({
+    x: Math.random() * bgCanvas.width,
+    y: Math.random() * bgCanvas.height,
+    r: Math.random() * 1.6 + 0.2,
+    a: Math.random(),
+    da: (Math.random() * 0.006 + 0.002) * (Math.random() > 0.5 ? 1 : -1),
+    color: Math.random() > 0.85 ? `rgba(232,120,138,` : `rgba(255,255,255,`
+  }));
+}
+function drawBg() {
+  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+  // Deep nebula gradient
+  const grad = bgCtx.createRadialGradient(bgCanvas.width*0.3, bgCanvas.height*0.3, 0, bgCanvas.width*0.5, bgCanvas.height*0.5, bgCanvas.width*0.9);
+  grad.addColorStop(0, 'rgba(26,8,40,0.95)');
+  grad.addColorStop(0.4,'rgba(12,5,24,0.97)');
+  grad.addColorStop(1, 'rgba(2,1,8,1)');
+  bgCtx.fillStyle = grad;
+  bgCtx.fillRect(0,0,bgCanvas.width,bgCanvas.height);
+  // Rose nebula accent
+  const neb = bgCtx.createRadialGradient(bgCanvas.width*0.75, bgCanvas.height*0.25, 0, bgCanvas.width*0.75, bgCanvas.height*0.25, bgCanvas.width*0.4);
+  neb.addColorStop(0, 'rgba(80,10,30,0.25)');
+  neb.addColorStop(1, 'transparent');
+  bgCtx.fillStyle = neb;
+  bgCtx.fillRect(0,0,bgCanvas.width,bgCanvas.height);
+  // Stars
+  stars.forEach(s => {
+    s.a += s.da;
+    if (s.a > 1 || s.a < 0.05) s.da *= -1;
+    bgCtx.beginPath();
+    bgCtx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+    bgCtx.fillStyle = s.color + s.a.toFixed(2) + ')';
+    bgCtx.fill();
+  });
+  requestAnimationFrame(drawBg);
+}
+initBgCanvas();
+drawBg();
+window.addEventListener('resize', () => { initBgCanvas(); });
+
+/* ── PRELOADER ── */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('preloader').classList.add('out');
+    bgCanvas.classList.add('active');
+  }, 2800);
+});
+
+/* ── DATE ── */
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const d = new Date();
+document.getElementById('ldate').textContent = `📅  ${d.getDate()} ${months[d.getMonth()]}, ${d.getFullYear()}`;
+
+/* ── AMBIENT PETALS ── */
+const particleLayer = document.getElementById('particle-layer');
+const petalColors = ['#c9304f','#e8768a','#c9a84c','#8b1a2f','#e8204a','rgba(201,48,79,0.6)'];
+function spawnPetal() {
+  const p = document.createElement('div');
+  p.className = 'ambient-petal';
+  const size = 6 + Math.random() * 12;
+  const dur  = 8 + Math.random() * 10;
+  p.style.cssText = `
+    left:${Math.random()*100}%;
+    width:${size}px; height:${size}px;
+    background:${petalColors[Math.floor(Math.random()*petalColors.length)]};
+    animation-duration:${dur}s;
+    animation-delay:${Math.random()*2}s;
+  `;
+  particleLayer.appendChild(p);
+  setTimeout(() => p.remove(), (dur+2)*1000);
+}
+
+/* ── OPEN LETTER ── */
+function openLetter() {
+  document.getElementById('hero').style.opacity = '0';
+  document.getElementById('hero').style.transition = 'opacity 0.6s ease';
+  setTimeout(() => {
+    document.getElementById('hero').style.display = 'none';
+    const ls = document.getElementById('letter-scene');
+    ls.classList.add('active');
+    window.scrollTo(0, 0);
+    document.getElementById('scrollHint').classList.add('show');
+    // Land the letter paper
+    setTimeout(() => {
+      document.getElementById('letterPaper').classList.add('landed');
+      document.getElementById('ldate').classList.add('vis');
+      document.getElementById('lgreet').classList.add('vis');
+    }, 200);
+    // Petal rain
+    petalInterval = setInterval(spawnPetal, 600);
+    // Observe elements
+    setTimeout(initObserver, 800);
+  }, 600);
+}
+
+/* ── INTERSECTION OBSERVER ── */
+function initObserver() {
+  const items = document.querySelectorAll('.para, .question-block, .sig-block, .chapter-marker');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        const delay = parseInt(en.target.dataset.delay || 0);
+        setTimeout(() => {
+          en.target.classList.add('vis');
+          if (en.target.id === 'sig') {
+            setTimeout(() => {
+              const rz = document.getElementById('response-zone');
+              rz.classList.add('active');
+              setTimeout(() => { rz.classList.add('vis'); document.getElementById('scrollHint').classList.remove('show'); }, 50);
+            }, 800);
+          }
+        }, delay);
+        obs.unobserve(en.target);
+      }
+    });
+  }, { threshold: 0.25 });
+  items.forEach(el => obs.observe(el));
+}
+
+/* ── SCROLL PROGRESS ── */
+window.addEventListener('scroll', () => {
+  const scrolled = window.scrollY;
+  const total = document.documentElement.scrollHeight - window.innerHeight;
+  document.getElementById('progress-bar').style.width = (scrolled / total * 100) + '%';
+});
+
+/* ── NO BUTTON DODGE ── */
+let dodgeCount = 0;
+const dodgeMsgs = ['सोच लो... 🤔','पकड़ लो! 😜','हम्म... 💭','ऐसे नहीं! 😏','पकड़ सको तो! 🏃','एक बार सोच लो! 🌹','नहीं मिलेगा! 😂','लगभग... 😁','पकड़ो मुझे! 💨','हम्फ़! 🤭'];
+function dodgeNo(btn) {
+  dodgeCount++;
+  if (dodgeCount > 12) {
+    btn.style.opacity = '0';
+    btn.style.pointerEvents = 'none';
+    return;
+  }
+  btn.textContent = dodgeMsgs[dodgeCount % dodgeMsgs.length];
+  const maxX = Math.max(window.innerWidth - 200, 100);
+  const maxY = Math.max(window.innerHeight - 80, 100);
+  btn.style.position = 'fixed';
+  btn.style.left = (20 + Math.random() * maxX) + 'px';
+  btn.style.top  = (20 + Math.random() * maxY) + 'px';
+  btn.style.zIndex = '9000';
+  btn.style.transition = 'all 0.28s cubic-bezier(0.34,1.56,0.64,1)';
+  if (dodgeCount > 7) {
+    btn.style.opacity = String(Math.max(0.15, 1 - (dodgeCount - 7) * 0.15));
+    btn.style.fontSize = Math.max(0.7, 1 - dodgeCount * 0.025) + 'rem';
+  }
+}
+
+/* ── CELEBRATION CONFETTI ── */
+function celebrate() {
+  const cel = document.getElementById('celebration');
+  cel.classList.add('show');
+  const canvas = document.getElementById('cel-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const palette = ['#c9304f','#e8768a','#c9a84c','#e8cc86','#ffffff','#ff4757','#ffd700','#ff6b8a'];
+  const pieces = Array.from({length: 180}, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height - canvas.height,
+    w: Math.random() * 10 + 4,
+    h: Math.random() * 5 + 2,
+    color: palette[Math.floor(Math.random() * palette.length)],
+    vy: Math.random() * 3 + 2,
+    vx: (Math.random() - 0.5) * 2,
+    angle: Math.random() * Math.PI * 2,
+    spin: (Math.random() - 0.5) * 0.15,
+    opacity: Math.random() * 0.7 + 0.3
+  }));
+
+  function drawConfetti() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      p.y  += p.vy;
+      p.x  += p.vx;
+      p.angle += p.spin;
+      if (p.y > canvas.height + 20) { p.y = -20; p.x = Math.random() * canvas.width; }
+      ctx.save();
+      ctx.globalAlpha = p.opacity;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+    });
+    requestAnimationFrame(drawConfetti);
+  }
+  drawConfetti();
+
+  // Extra petal burst
+  for (let i = 0; i < 25; i++) {
+    setTimeout(() => {
+      const p = document.createElement('div');
+      p.className = 'ambient-petal';
+      const size = 10 + Math.random() * 18;
+      p.style.cssText = `
+        left:${Math.random()*100}%;
+        width:${size}px; height:${size}px;
+        background:${petalColors[Math.floor(Math.random()*petalColors.length)]};
+        animation-duration:${4+Math.random()*5}s;
+        z-index:9999;
+      `;
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 10000);
+    }, i * 120);
+  }
+}
+</script>
+</body>
+</html>
